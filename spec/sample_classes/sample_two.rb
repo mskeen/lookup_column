@@ -1,0 +1,2 @@
+class SampleTwo
+end
