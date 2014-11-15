@@ -7,7 +7,7 @@ module LookupColumn
   end
 
   def respond_to?(method, priv = false)
-    self.class.lookup_groups[method].present? ? true : super
+    self.class.lookup_groups[method].present? || super
   end
 
   def method_missing(sym, *args)
@@ -33,6 +33,19 @@ module LookupColumn
     def lookup_groups
       @lookup_groups ||= {}
     end
+
+    def respond_to?(method, priv = false)
+      lookup_groups[method].present? || super
+    end
+
+    def method_missing(sym, *args)
+      group = lookup_groups[sym]
+      if group && args.size == 1
+        group.find_option_by_id(args[0])
+      else
+        super
+      end
+    end
   end
 
   private
@@ -56,16 +69,22 @@ module LookupColumn
       @name = name
       @column = column
       @options = []
-      @option_lookups = {}
+      @code_lookups = {}
+      @id_lookups = {}
     end
 
     def add_option(option)
       options << option
-      @option_lookups[option.code] = option
+      @code_lookups[option.code] = option
+      @id_lookups[option.id] = option
     end
 
     def find_option_by_code(code)
-      @option_lookups[code]
+      @code_lookups[code]
+    end
+
+    def find_option_by_id(id)
+      @id_lookups[id]
     end
   end
 end
@@ -76,14 +95,16 @@ class SampleOne
 
   attr_accessor :status_cd
 
-  lookup_group :status, :status_cd
-  option :new, 1, 'New Order'
-  option :in_progress, 2, 'In progress'
-  option :new, 3, 'New Order'
+  lookup_group :status, :status_cd do
+    option :new, 1, 'New Order'
+    option :in_progress, 2, 'In progress'
+    option :complete, 3, 'New Order'
+  end
 
-  lookup_group :frequency, :frequency_cd
-  option :daily, 1, 'Daily', increment: 24
-  option :weekly, 2, 'Weekly', increment: 24 * 7
+  lookup_group :frequency, :frequency_cd do
+    option :daily, 1, 'Daily', increment: 24
+    option :weekly, 2, 'Weekly', increment: 24 * 7
+  end
 end
 
 begin
@@ -93,5 +114,8 @@ begin
   puts SampleOne::lookup_groups[:status].name
   s.status_cd = 1
   puts s.status.display
-  puts s.status == SampleOne.status(:new)
+  puts '--'
+  puts s.status
+  puts SampleOne::status(:new)
+  puts s.status == SampleOne::status(:new)
 end
