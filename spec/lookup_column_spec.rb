@@ -4,7 +4,7 @@ require 'spec_helper'
 class TestOne
   include LookupColumn
 
-  attr_accessor :status_cd
+  attr_accessor :status_cd, :frequency_cd
 
   lookup_group :status, :status_cd do
     option :new,           1, 'New Order'
@@ -68,6 +68,15 @@ describe LookupColumn do
       expect(@sample.status == TestOne::status(:in_progress)).to be true
     end
 
+    it "allows access to extra data items" do
+      @sample.frequency = TestOne::frequency(:weekly)
+      expect(@sample.frequency.increment).to be 24*7
+    end
+
+    it "return method_missing if asking for a data item that doesn't exist" do
+      @sample.frequency = TestOne::frequency(:weekly)
+      expect { @sample.frequency.interval}.to raise_error(NoMethodError)
+    end
   end
 
 end

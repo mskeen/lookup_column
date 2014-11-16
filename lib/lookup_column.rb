@@ -76,6 +76,14 @@ module LookupColumn
     def to_s
       "id:#{id}, code:#{code}, display:#{display}"
     end
+
+    def respond_to?(method, priv = false)
+      data[method].present? || super
+    end
+
+    def method_missing(sym, *args)
+      data[sym] || super
+    end
   end
 
   # LookupGroup
