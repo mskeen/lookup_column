@@ -21,9 +21,10 @@ module LookupColumn
 
   # Class methods
   module ClassMethods
-    def lookup_group(name, column)
+    def lookup_group(name, column, &block)
       @lookup_group = LookupGroup.new(name, column)
       lookup_groups[name] = @lookup_group
+      instance_eval(&block) if block
     end
 
     def option(id, code, display, data = {})
