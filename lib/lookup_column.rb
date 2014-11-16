@@ -1,3 +1,5 @@
+require 'active_support/inflector'
+
 # The main gem classes
 module LookupColumn
   def self.included(base)
@@ -51,16 +53,26 @@ module LookupColumn
     end
 
     def respond_to?(method, priv = false)
-      lookup_groups[method].present? || super
+      lookup_groups[method].present? ||
+      pluralized_name_match(method).present? ||
+      super
     end
 
     def method_missing(sym, *args)
       group = lookup_groups[sym]
       return group.find_option_by_id(args[0]) if group && args.size == 1
+      group = pluralized_name_match(sym)
+      return group.options if group && args.size == 0
       super
     end
-  end
 
+    def pluralized_name_match(sym)
+      lookup_groups.each do |_key, g|
+        return g if g.name.to_s.pluralize == sym.to_s
+      end
+      nil
+    end
+  end
 
   # LookupOption represents a single option for a column
   class LookupOption

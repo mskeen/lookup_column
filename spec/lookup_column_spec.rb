@@ -26,6 +26,10 @@ describe LookupColumn do
       expect(TestOne.lookup_groups.size).to eq 2
     end
 
+    it 'returns a list of options when calling the pluralized column name' do
+      expect(TestOne.frequencies.size).to eq 2
+    end
+
     it 'allows access to each lookup_group' do
       expect(TestOne.lookup_groups[:status].name).to eq :status
       expect(TestOne.lookup_groups[:status].column).to eq :status_cd
@@ -73,7 +77,7 @@ describe LookupColumn do
       expect(@sample.frequency.increment).to be 24*7
     end
 
-    it "return method_missing if asking for a data item that doesn't exist" do
+    it "return NoMethodError if asking for a data item that doesn't exist" do
       @sample.frequency = TestOne::frequency(:weekly)
       expect { @sample.frequency.interval}.to raise_error(NoMethodError)
     end
