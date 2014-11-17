@@ -1,5 +1,9 @@
 # Lookup Column
 
+[![Build Status](https://travis-ci.org/mskeen/lookup_column.png?branch=master)](https://travis-ci.org/mskeen/lookup_column) 
+
+[![Coverage Status](https://coveralls.io/repos/mskeen/lookup_column/badge.png?branch=master)](https://coveralls.io/r/mskeen/lookup_column?branch=master)
+
 This is a ruby gem for conveniently handling lookup values for a field in an ActiveRecord model.
 
 ## Installation
