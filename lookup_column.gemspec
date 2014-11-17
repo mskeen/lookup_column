@@ -25,4 +25,5 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "pry"
   gem.add_development_dependency "pry-remote"
   gem.add_development_dependency "pry-nav"
+  gem.add_development_dependency "coveralls"
 end
