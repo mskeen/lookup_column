@@ -26,9 +26,9 @@ module LookupColumn
 
   def execute_method_call(group, sym, args)
     if sym.to_s.end_with? '='
-      send((group.column.to_s + '=').to_sym, args[0].code)
+      send((group.column.to_s + '=').to_sym, args[0].id)
     else
-      group.find_option_by_code(send(group.column))
+      group.find_option_by_id(send(group.column))
     end
   end
 
@@ -40,8 +40,8 @@ module LookupColumn
       instance_eval(&block) if block
     end
 
-    def option(id, code, display, data = {})
-      @lookup_group.add_option(LookupOption.new(id, code, display, data))
+    def option(name, id, display, data = {})
+      @lookup_group.add_option(LookupOption.new(name, id, display, data))
     end
 
     def find_group(name)
@@ -60,7 +60,7 @@ module LookupColumn
 
     def method_missing(sym, *args)
       group = lookup_groups[sym]
-      return group.find_option_by_id(args[0]) if group && args.size == 1
+      return group.find_option_by_name(args[0]) if group && args.size == 1
       group = pluralized_name_match(sym)
       return group.options if group && args.size == 0
       super
@@ -76,17 +76,16 @@ module LookupColumn
 
   # LookupOption represents a single option for a column
   class LookupOption
-    attr_reader :id, :code, :display, :data
-    def initialize(id, code, display, data = {})
+    attr_reader :id, :name, :display, :data
+    def initialize(name, id, display, data = {})
+      @name = name
       @id = id
-      @code = code
       @display = display
-
       @data = data
     end
 
     def to_s
-      "id:#{id}, code:#{code}, display:#{display}"
+      "id:#{id}, name:#{name}, display:#{display}"
     end
 
     def respond_to?(method, priv = false)
@@ -105,25 +104,22 @@ module LookupColumn
       @name = name
       @column = column
       @options = []
-      @code_lookups = {}
+      @name_lookups = {}
       @id_lookups = {}
     end
 
     def add_option(option)
       options << option
-      @code_lookups[option.code] = option
+      @name_lookups[option.name] = option
       @id_lookups[option.id] = option
-    end
-
-    def find_option_by_code(code)
-      @code_lookups[code]
     end
 
     def find_option_by_id(id)
       @id_lookups[id]
     end
 
+    def find_option_by_name(name)
+      @name_lookups[name]
+    end
   end
-
-  private
 end

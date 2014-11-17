@@ -41,8 +41,8 @@ describe LookupColumn do
     end
 
     it 'returns an option using a class method with the group''s name' do
-      expect(TestOne.status(:in_progress).id).to eq :in_progress
-      expect(TestOne.status(:in_progress).code).to eq 2
+      expect(TestOne.status(:in_progress).name).to eq :in_progress
+      expect(TestOne.status(:in_progress).id).to eq 2
       expect(TestOne.status(:in_progress).display).to eq 'In Progress'
     end
 
