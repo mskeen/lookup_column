@@ -8,8 +8,8 @@ Gem::Specification.new do |gem|
   gem.version       = LookupColumn::VERSION
   gem.authors       = ["Mike Skeen"]
   gem.email         = ["skeen.mike@gmail.com"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
+  gem.description   = %q{Gem to conveniently handle lookup values in a model. Provides field getters/setters and option list for droplists in views.}
+  gem.summary       = %q{Gem to conveniently handle lookup values in a model.}
   gem.homepage      = ""
 
   gem.files         = `git ls-files`.split($/)
