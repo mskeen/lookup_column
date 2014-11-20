@@ -22,30 +22,51 @@ describe LookupColumn do
 
   describe 'Class Methods' do
 
-    it 'allows setup of the columns' do
-      expect(TestOne.lookup_groups.size).to eq 2
+    describe 'respond_to?' do
+      it 'respond_to works for group names' do
+        expect(TestOne.respond_to? :frequency).to eq true
+        expect(TestOne.respond_to? :status).to eq true
+      end
+
+      it 'respond_to works for pluralized group names' do
+        expect(TestOne.respond_to? :frequencies).to eq true
+        expect(TestOne.respond_to? :statuses).to eq true
+      end
+
+      it 'respond_to still works when an unknown method is passed' do
+        expect(TestOne.respond_to? :blah).to eq false
+      end
     end
 
-    it 'returns a list of options when calling the pluralized column name' do
-      expect(TestOne.frequencies.size).to eq 2
+    describe 'lookup_groups' do
+      it 'allows setup of the columns' do
+        expect(TestOne.lookup_groups.size).to eq 2
+      end
+
+      it 'allows access to each lookup_group' do
+        expect(TestOne.lookup_groups[:status].name).to eq :status
+        expect(TestOne.lookup_groups[:status].column).to eq :status_cd
+      end
+
+      it 'allows access to each group''s options' do
+        expect(TestOne.lookup_groups[:status].options.size).to eq 3
+        expect(TestOne.lookup_groups[:frequency].options.size).to eq 2
+      end
     end
 
-    it 'allows access to each lookup_group' do
-      expect(TestOne.lookup_groups[:status].name).to eq :status
-      expect(TestOne.lookup_groups[:status].column).to eq :status_cd
+    describe 'a method equal to the column name' do
+      it 'returns an option using a class method with the group''s name' do
+        expect(TestOne.status(:in_progress).name).to eq :in_progress
+        expect(TestOne.status(:in_progress).id).to eq 2
+        expect(TestOne.status(:in_progress).display).to eq 'In Progress'
+      end
     end
 
-    it 'allows access to each group''s options' do
-      expect(TestOne.lookup_groups[:status].options.size).to eq 3
-      expect(TestOne.lookup_groups[:frequency].options.size).to eq 2
+    describe 'pluralized column name' do
+      it 'returns a list of options' do
+        expect(TestOne.frequencies.size).to eq 2
+      end
     end
-
-    it 'returns an option using a class method with the group''s name' do
-      expect(TestOne.status(:in_progress).name).to eq :in_progress
-      expect(TestOne.status(:in_progress).id).to eq 2
-      expect(TestOne.status(:in_progress).display).to eq 'In Progress'
-    end
-
   end
 
   describe 'Instance Methods' do

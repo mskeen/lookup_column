@@ -53,8 +53,7 @@ module LookupColumn
     end
 
     def respond_to?(method, priv = false)
-      lookup_groups[method].present? ||
-      pluralized_name_match(method).present? ||
+      return true if lookup_groups[method] || pluralized_name_match(method)
       super
     end
 

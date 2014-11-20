@@ -40,7 +40,7 @@ We would like the `status` and `frequency` fields to allow a specific set of val
 Using the `lookup_column` gem, we can define the available options as follows:
 
     model Remider < ActiveRecord::Base
-      include 'lookup_column'
+      include LookupColumn
 
       belongs_to :user
       
